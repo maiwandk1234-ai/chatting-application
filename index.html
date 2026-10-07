@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp</title>
+  <meta name="description" content="WhatsApp-style Frontend Web Application featuring chats, calls, status stories, channels, and group management.">
+  <link rel="icon" type="image/svg+xml" href="Assets/whatsapp_logo.svg">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/chat.css">
+  <link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+  <div class="app-window">
+    <!-- Top Window Titlebar (Matching WhatsApp Desktop Title) -->
+    <header class="window-titlebar">
+      <img class="wa-brand-icon" src="Assets/whatsapp_logo.svg" alt="WhatsApp Logo">
+      <span class="wa-brand-name">WhatsApp</span>
+      <div class="window-spacer"></div>
+      <button class="theme-toggle-btn" id="theme-toggle-topbar" title="Toggle Dark/Light Mode">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+        </svg>
+        <span>Dark Mode</span>
+      </button>
+    </header>
+
+    <div class="app-container">
+      <!-- 1. Leftmost Navigation Rail -->
+      <nav class="nav-rail" aria-label="Main Navigation Rail">
+        <div class="rail-top-group">
+          <!-- Chats Tab (Active) -->
+          <button class="rail-btn active" data-tab="chats" title="Chats" id="rail-chats-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+            </svg>
+          </button>
+
+          <!-- Calls Tab -->
+          <button class="rail-btn" data-tab="calls" title="Calls" id="rail-calls-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+          </button>
+
+          <!-- Status Tab -->
+          <button class="rail-btn" data-tab="status" title="Status" id="rail-status-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke="currentColor" stroke-dasharray="8 4" stroke-width="2" fill="none"/>
+            </svg>
+          </button>
+
+          <!-- Channels Tab (With green dot badge matching screenshot!) -->
+          <button class="rail-btn" data-tab="channels" title="Channels" id="rail-channels-btn">
+            <span class="rail-badge-dot"></span>
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C6.48 3 2 7.48 2 13c0 3.7 2.01 6.92 4.99 8.65l1-1.73C5.61 18.53 4 15.96 4 13c0-4.41 3.59-8 8-8s8 3.59 8 8c0 2.96-1.61 5.53-3.99 6.92l1 1.73C19.99 19.92 22 16.7 22 13c0-5.52-4.48-10-10-10z"/>
+            </svg>
+          </button>
+
+          <!-- Communities / Groups Tab -->
+          <button class="rail-btn" data-tab="groups" title="Communities & Groups" id="rail-groups-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            </svg>
+          </button>
+
+          <div class="rail-divider"></div>
+
+          <!-- Archived Chats -->
+          <button class="rail-btn" data-tab="archived" title="Archived Chats" id="rail-archived-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
+            </svg>
+          </button>
+
+          <!-- Starred Messages -->
+          <button class="rail-btn" data-tab="starred" title="Starred Messages" id="rail-starred-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+          </button>
+
+          <!-- Meta AI Sparkle Button (Rainbow / Purple Gradient matching screenshot!) -->
+          <button class="rail-btn meta-ai-btn" id="rail-meta-ai-btn" title="Meta AI">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="metaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ec4899"/>
+                  <stop offset="50%" stop-color="#8b5cf6"/>
+                  <stop offset="100%" stop-color="#3b82f6"/>
+                </linearGradient>
+              </defs>
+              <path fill="url(#metaGrad)" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8zm-2.5-12.5a2.5 2.5 0 0 0-2.5 2.5c0 1.94 2.5 4.5 2.5 4.5s2.5-2.56 2.5-4.5a2.5 2.5 0 0 0-2.5-2.5zm5 0a2.5 2.5 0 0 0-2.5 2.5c0 1.94 2.5 4.5 2.5 4.5s2.5-2.56 2.5-4.5a2.5 2.5 0 0 0-2.5-2.5z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="rail-spacer"></div>
+
+        <div class="rail-bottom-group">
+          <!-- Status update / Media button -->
+          <button class="rail-btn" title="Media & Gallery">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+            </svg>
+          </button>
+
+          <!-- User Profile Avatar Button -->
+          <button class="rail-avatar-btn" id="rail-profile-btn" title="Profile Settings">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%232b5876'/><stop offset='100%' stop-color='%234e4376'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='38' r='18' fill='%23e0e7ff'/><path d='M22 84c5-18 20-22 28-22s23 4 28 22z' fill='%23e0e7ff'/></svg>" alt="My Profile">
+          </button>
+        </div>
+      </nav>
+
+      <!-- 2. Second Column - Sidebar Panel (Chats / Calls / Status list) -->
+      <aside class="sidebar-panel" id="sidebar-panel">
+        <!-- Header: Chats title, 3 dots, + button (Matches screenshot!) -->
+        <div class="sidebar-header">
+          <h1 class="sidebar-title" id="sidebar-main-title">Chats</h1>
+          <div class="sidebar-header-actions">
+            <!-- 3 Dots Options -->
+            <button class="header-action-btn" title="Menu" onclick="openCreateGroupModal()">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            </button>
+
+            <!-- Green + Button (Matches screenshot!) -->
+            <button class="new-chat-btn" id="new-chat-btn" title="New Chat / Create Group" onclick="openCreateGroupModal()">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Bar Container (Matches screenshot!) -->
+        <div class="search-container" id="search-container">
+          <div class="search-pill-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <input type="text" id="search-input" placeholder="Search or start a new chat" autocomplete="off">
+            <button class="search-clear-btn" id="search-clear-btn" title="Clear search">×</button>
+          </div>
+        </div>
+
+        <!-- Filter Chips Row (Matches screenshot!) -->
+        <div class="filter-chips-row" id="filter-chips-row">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="unread">
+            <span>Unread</span>
+            <span class="chip-unread-dot"></span>
+          </button>
+          <button class="filter-chip" data-filter="favourites">Favourites</button>
+          <button class="filter-chip filter-chip-dropdown" data-filter="groups" title="Filter Groups">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M7 10l5 5 5-5z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Chat List Container -->
+        <div class="chat-list-container" id="chat-list-container">
+          <!-- Dynamically populated by js/app.js -->
+        </div>
+      </aside>
+
+      <!-- 3. Third Column - Main Chat Area -->
+      <main class="chat-area" id="chat-area">
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <div class="chat-header-left" id="chat-header-left" title="Click to view info">
+            <button class="mobile-back-btn" id="mobile-back-btn" title="Back to chats">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+              </svg>
+            </button>
+            <img class="chat-header-avatar" id="chat-header-avatar" src="" alt="Contact Avatar">
+            <div class="chat-header-info">
+              <div class="chat-header-name" id="chat-header-name">Mama</div>
+              <div class="chat-header-status" id="chat-header-status">online</div>
+            </div>
+          </div>
+
+          <div class="chat-header-actions">
+            <!-- Video Call -->
+            <button class="chat-header-btn" id="header-video-call-btn" title="Video Call">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+              </svg>
+            </button>
+
+            <!-- Voice Call -->
+            <button class="chat-header-btn" id="header-voice-call-btn" title="Voice Call">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+            </button>
+
+            <!-- Search Inside Chat -->
+            <button class="chat-header-btn" title="Search in chat" onclick="alert('Search within conversation activated.')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            </button>
+
+            <!-- 3 Dots Menu -->
+            <button class="chat-header-btn" title="More options" onclick="openInfoDrawer()">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div class="chat-messages-container" id="chat-messages-container">
+          <!-- Dynamically populated by js/chat.js -->
+        </div>
+
+        <!-- Chat Composer (Message Input Bar) -->
+        <footer class="chat-composer">
+          <!-- Emoji Picker Toggle -->
+          <button class="composer-action-btn" id="emoji-toggle-btn" title="Emojis">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+            </svg>
+          </button>
+
+          <!-- Attach Button -->
+          <button class="composer-action-btn" id="attach-toggle-btn" title="Attach media, documents, polls">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 0 1 5 0v10.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V6H9v9.5a3.5 3.5 0 0 0 7 0V5a4.5 4.5 0 0 0-9 0v12.5c0 3.31 2.69 6 6 6s6-2.69 6-6V6h-2.5z"/>
+            </svg>
+          </button>
+
+          <!-- Text Input Box -->
+          <div class="composer-input-box">
+            <input type="text" class="composer-input" id="composer-input" placeholder="Type a message" autocomplete="off">
+          </div>
+
+          <!-- Dynamic Mic / Send Button -->
+          <button class="send-or-mic-btn mic-mode" id="send-or-mic-btn" title="Voice note or send message">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+            </svg>
+          </button>
+
+          <!-- Popovers -->
+          <div class="emoji-picker-popover" id="emoji-picker-popover">
+            <div class="emoji-picker-header">Smileys & Emojis</div>
+            <div class="emoji-picker-grid" id="emoji-picker-grid"></div>
+          </div>
+
+          <div class="attachment-popover" id="attachment-popover">
+            <button class="attach-option-btn" data-type="photos">
+              <div class="attach-icon-circle" style="background-color: #7c3aed;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+              </div>
+              <span>Photos & Videos</span>
+            </button>
+            <button class="attach-option-btn" data-type="document">
+              <div class="attach-icon-circle" style="background-color: #5157ae;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              </div>
+              <span>Document</span>
+            </button>
+            <button class="attach-option-btn" data-type="contact">
+              <div class="attach-icon-circle" style="background-color: #0284c7;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </div>
+              <span>Contact</span>
+            </button>
+            <button class="attach-option-btn" data-type="poll">
+              <div class="attach-icon-circle" style="background-color: #f59e0b;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+              </div>
+              <span>Poll</span>
+            </button>
+          </div>
+        </footer>
+      </main>
+
+      <!-- 4. Fourth Panel - Contact & Group Info Drawer (Right Side) -->
+      <aside class="info-drawer" id="info-drawer">
+        <div class="drawer-header">
+          <button class="header-action-btn" id="info-drawer-close-btn" title="Close">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+          <span class="drawer-header-title" id="drawer-title">Contact info</span>
+        </div>
+
+        <div class="drawer-hero-section">
+          <img class="drawer-hero-avatar" id="drawer-avatar" src="" alt="Avatar">
+          <div class="drawer-hero-name" id="drawer-name">Mama</div>
+          <div class="drawer-hero-sub" id="drawer-sub">+1 (555) 201-4491</div>
+        </div>
+
+        <div class="drawer-section" id="drawer-desc-section">
+          <div class="drawer-section-title">About / Description</div>
+          <div class="drawer-description-text" id="drawer-desc-text">Family first ❤️</div>
+        </div>
+
+        <!-- Members Section for Groups -->
+        <div class="drawer-section" id="drawer-members-section" style="display: none;">
+          <div class="drawer-members-header">
+            <span class="drawer-section-title" id="drawer-members-count">5 participants</span>
+            <button class="add-member-btn" onclick="handleAddUserToGroup()">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <span>Add Participant</span>
+            </button>
+          </div>
+
+          <div id="drawer-members-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- 5. User Profile Drawer (Left Side Slide-in) -->
+      <aside class="profile-drawer" id="profile-drawer">
+        <div class="drawer-header">
+          <button class="header-action-btn" id="profile-drawer-close" title="Close">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+          </button>
+          <span class="drawer-header-title">Profile</span>
+        </div>
+
+        <div class="drawer-hero-section">
+          <img class="drawer-hero-avatar" id="profile-avatar-img" src="" alt="Profile picture">
+          <div style="font-size: 13px; color: var(--wa-green-primary); font-weight: 700; cursor: pointer;">Change profile photo</div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-section-title">Your name</div>
+          <div class="profile-edit-field">
+            <span style="font-size: 16px; font-weight: 700;" id="profile-name-val">Alex Morgan</span>
+            <button class="header-action-btn" onclick="handleEditProfileName()" title="Edit Name">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-section-title">About</div>
+          <div class="profile-edit-field">
+            <span style="font-size: 15px;" id="profile-about-val">Hey there! I am using WhatsApp.</span>
+            <button class="header-action-btn" onclick="handleEditProfileAbout()" title="Edit About">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-section-title">Phone number</div>
+          <div style="font-size: 15px; color: var(--wa-text-secondary);" id="profile-phone-val">+1 (555) 382-9012</div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Modals & Overlays -->
+
+    <!-- Status Viewer Story Modal -->
+    <div class="status-viewer-modal" id="status-viewer-modal">
+      <div class="status-viewer-box">
+        <div class="status-progress-bars" id="status-progress-bars"></div>
+        <div class="status-viewer-header">
+          <div class="status-viewer-author">
+            <img class="status-viewer-avatar" id="status-viewer-avatar" src="" alt="Status Avatar">
+            <div>
+              <div class="status-viewer-author-name" id="status-viewer-name">Contact Name</div>
+              <div class="status-viewer-time" id="status-viewer-time">24 minutes ago</div>
+            </div>
+          </div>
+          <button class="status-viewer-close-btn" id="status-viewer-close" title="Close">×</button>
+        </div>
+
+        <div class="status-content-area" id="status-content-area">
+          <div class="status-story-text" id="status-story-text"></div>
+        </div>
+
+        <div class="status-viewer-footer">
+          <div class="status-quick-reactions">
+            <button class="status-quick-rx">❤️</button>
+            <button class="status-quick-rx">😂</button>
+            <button class="status-quick-rx">😮</button>
+            <button class="status-quick-rx">😢</button>
+            <button class="status-quick-rx">🙏</button>
+          </div>
+          <div class="status-reply-bar">
+            <input type="text" id="status-reply-input" placeholder="Reply to contact...">
+            <button id="status-reply-send-btn" style="color: #25d366; font-weight: 700;">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call Overlay Modal -->
+    <div class="call-overlay-modal" id="call-overlay-modal">
+      <div class="call-card-top">
+        <div class="call-avatar-wrapper">
+          <img class="call-avatar" id="call-avatar" src="" alt="Call Avatar">
+          <div class="call-pulse-ring"></div>
+        </div>
+        <div class="call-contact-name" id="call-contact-name">Mama</div>
+        <div class="call-status-label" id="call-status-label">WhatsApp Voice Call...</div>
+        <div class="call-timer" id="call-timer">Calling...</div>
+      </div>
+
+      <div class="call-controls-bar">
+        <button class="call-action-btn" id="call-mic-btn" title="Mute Microphone">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+          </svg>
+        </button>
+
+        <button class="call-action-btn" id="call-camera-btn" title="Turn Camera Off">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+          </svg>
+        </button>
+
+        <button class="call-action-btn" title="Speaker">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+        </button>
+
+        <button class="call-end-btn" id="call-end-btn" title="End Call">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+            <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Create Group Modal Dialog -->
+    <div class="dialog-backdrop" id="create-group-modal">
+      <div class="dialog-card">
+        <div class="dialog-header">
+          <span class="dialog-title">New Group</span>
+          <button class="header-action-btn" id="close-group-modal-btn">×</button>
+        </div>
+        <div class="dialog-body">
+          <div>
+            <label class="dialog-input-label">Group Subject / Name</label>
+            <input type="text" class="dialog-text-input" id="group-name-input" placeholder="e.g. Project Sprint 🎯" style="margin-top: 6px;">
+          </div>
+          <div>
+            <label class="dialog-input-label">Select Participants</label>
+            <div class="contact-checklist" id="group-contact-checklist"></div>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="btn-secondary" id="cancel-create-group-btn">Cancel</button>
+          <button class="btn-primary" id="submit-create-group-btn">Create Group</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/groups.js"></script>
+  <script src="js/status.js"></script>
+  <script src="js/calls.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
