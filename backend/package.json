@@ -1,0 +1,30 @@
+{
+  "name": "chat-app-backend",
+  "version": "1.0.0",
+  "description": "Modular Monolithic MVC Backend for WhatsApp-style Chatting Application",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "chat-app",
+    "modular-monolith",
+    "mvc",
+    "socketio"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
+
